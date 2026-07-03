@@ -88,18 +88,18 @@ def ask(
 
 
 def _print_report(rep) -> None:  # noqa: ANN001
-    console.print(f"\n[bold]Compliance report[/bold]")
+    console.print("\n[bold]Compliance report[/bold]")
     console.print(f"  Requirements:      {rep.total_requirements}")
     console.print(f"  Verified:          {rep.verified}  ([bold]{rep.coverage:.0%}[/bold] coverage)")
     console.print(f"  Quality score:     {rep.quality_score:.0%}")
     console.print(f"  Orphan reqs:       {', '.join(rep.orphan_requirements) or '—'}")
     console.print(f"  Orphan tests:      {', '.join(rep.orphan_tests) or '—'}")
     console.print(
-        f"  Conflicts:         "
+        "  Conflicts:         "
         + ("; ".join(f"{a}↔{b}" for a, b in rep.conflicts) or "—")
     )
     console.print(
-        f"  Duplicates:        "
+        "  Duplicates:        "
         + ("; ".join(f"{a}≈{b}" for a, b in rep.duplicates) or "—")
     )
 

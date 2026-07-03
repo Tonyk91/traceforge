@@ -48,7 +48,7 @@ class Lake:
                         for t in tests
                     ]) + ") AS t(test_id, title, covers, method, status, classification)")
         con.execute("CREATE OR REPLACE TABLE trace_links AS SELECT * FROM (VALUES " +
-                    self._values([(l.source, l.target, l.kind) for l in links]) +
+                    self._values([(lk.source, lk.target, lk.kind) for lk in links]) +
                     ") AS t(source, target, kind)")
         # Persist silver as Parquet (the canonical silver artifact).
         con.execute(f"COPY requirements TO '{self.silver / 'requirements.parquet'}' (FORMAT PARQUET)")
