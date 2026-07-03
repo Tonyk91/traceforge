@@ -51,3 +51,4 @@ target-version = "py311"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+pythonpath = ["."]   # make the top-level `eval` package importable regardless of how pytest is invoked
