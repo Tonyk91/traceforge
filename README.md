@@ -1,3 +1,14 @@
+---
+title: TraceForge
+emoji: 🛰️
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_port: 8000
+pinned: false
+license: mit
+---
+
 # TraceForge
 
 [![CI](https://github.com/Tonyk91/traceforge/actions/workflows/ci.yml/badge.svg)](https://github.com/Tonyk91/traceforge/actions/workflows/ci.yml)

@@ -32,6 +32,30 @@ The script prints the live URL on completion:
 ✅ TraceForge is live: https://traceforge.<hash>.swedencentral.azurecontainerapps.io/
 ```
 
+## Deploy to Hugging Face Spaces (no Azure account needed)
+
+The same Docker image runs as a **Docker Space** — a free public HTTPS demo. The Space metadata
+lives in the YAML frontmatter of `README.md` (`sdk: docker`, `app_port: 8000`), and the container
+runs as UID 1000 as HF requires.
+
+1. Create a Space at <https://huggingface.co/new-space> — **SDK: Docker**, name `traceforge`,
+   visibility Public.
+2. Add the Space as a git remote and push (HF builds the Dockerfile automatically):
+
+   ```bash
+   git remote add hf https://huggingface.co/spaces/<your-hf-username>/traceforge
+   git push hf main
+   ```
+
+   Authenticate with a Hugging Face access token (Settings → Access Tokens, write scope) when git
+   prompts, or use `huggingface-cli login` first.
+3. Watch the build in the Space's **Logs** tab. When it finishes, the dashboard is live at
+   `https://<your-hf-username>-traceforge.hf.space/`.
+
+Runs fully offline on the free CPU tier — no Azure required. To enable Azure OpenAI synthesis on
+the Space, add the `AZURE_OPENAI_*` values as **Secrets** in the Space settings (same variable
+names as below).
+
 ## Enable Azure OpenAI (optional)
 
 The demo is complete without it, but wiring Azure OpenAI makes `search_requirements` / `/ask`

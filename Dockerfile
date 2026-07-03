@@ -9,6 +9,11 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     TRACEFORGE_BRONZE=data/bronze/trus
 
+# Non-root runtime user. Hugging Face Spaces runs the container as UID 1000, and it's good
+# practice everywhere. We install as root (system site-packages, world-readable) then drop
+# privileges for the running process; the serving path never writes to disk.
+RUN useradd -m -u 1000 user
+
 WORKDIR /app
 
 # Install the package (with the Azure extra so Azure OpenAI works when configured).
@@ -20,6 +25,8 @@ RUN pip install ".[azure]"
 # Bronze source only — silver/gold lake artifacts are regenerated in-process at first request.
 COPY data/bronze ./data/bronze
 
-# Container Apps injects PORT; default to 8000 for local `docker run`.
+USER user
+
+# Hosts inject PORT (Container Apps) or route to app_port (HF Spaces); default 8000 for local run.
 EXPOSE 8000
 CMD ["sh", "-c", "uvicorn traceforge.api:app --host 0.0.0.0 --port ${PORT:-8000}"]
