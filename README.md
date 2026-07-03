@@ -78,6 +78,10 @@ traceforge report
 
 # Ask a grounded question (respects your clearance)
 traceforge ask "Which requirements have no verifying test?" --clearance RESTRICTED
+
+# Serve the engine as MCP tools for agents (Claude Desktop, IDE copilots) — see docs/mcp.md
+python -m traceforge.mcp_server         # stdio server
+python -m traceforge.mcp_client_demo    # smoke test: lists tools, proves clearance enforcement
 ```
 
 ---

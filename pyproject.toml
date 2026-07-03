@@ -32,6 +32,7 @@ dev = ["pytest>=8.0", "ruff>=0.4", "mypy>=1.9", "httpx>=0.27"]
 
 [project.scripts]
 traceforge = "traceforge.cli:app"
+traceforge-mcp = "traceforge.mcp_server:main"
 
 [build-system]
 requires = ["setuptools>=68"]
