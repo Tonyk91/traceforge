@@ -1,0 +1,44 @@
+# Ground truth for the synthetic TRUS dataset.
+# These are the defects deliberately seeded into data/bronze/trus so the eval
+# suite can measure extraction, quality analysis, traceability and access control.
+
+dataset: trus
+source_srs: data/bronze/trus/SRS-TRUS-001.md
+
+# All requirements the parser is expected to extract (extraction precision/recall).
+requirement_ids:
+  [SR-001, SR-002, SR-003, SR-004, SR-005, SR-006, SR-007, SR-008, SR-009, SR-010,
+   SR-011, SR-012, SR-013, SR-014, SR-015, SR-016, SR-017, SR-018, SR-019, SR-020,
+   SR-021, SR-022, SR-023, SR-024]
+
+classification:
+  RESTRICTED: [SR-010, SR-011, SR-012, SR-018, SR-023]
+  SECRET: [SR-013, SR-022]
+  # everything else is OPEN
+
+# Expected quality flags (deterministic EARS/INCOSE rules).
+quality_flags:
+  SR-004: [AMBIGUOUS, NOT_TESTABLE]  # "user-friendly" — no objective acceptance criterion
+  SR-007: [AMBIGUOUS, NOT_TESTABLE]  # "adverse weather conditions"
+  SR-009: [NOT_ATOMIC]               # capture AND transmit AND store
+  SR-012: [WEAK_IMPERATIVE]          # "should" for a binding requirement
+  SR-020: [NOT_ATOMIC]               # enforce geofence AND auto return-to-home
+  SR-021: [AMBIGUOUS, MISSING_VERIFICATION, NOT_TESTABLE]  # no method + "adequate"
+
+# Traceability defects.
+orphan_requirements: [SR-007, SR-021, SR-023]   # no verifying test
+orphan_tests: [TC-020]                          # references non-existent SR-777
+
+conflicts:
+  - pair: [SR-001, SR-014]        # endurance >= 6h  vs  flight time <= 4h
+    attribute: flight_endurance_hours
+
+duplicates:
+  - pair: [SR-011, SR-018]        # identical 50 km datalink range requirement
+    attribute: datalink_range_km
+
+# Access-control expectations: a query at clearance L must never surface a
+# requirement/test marked above L in its answer or citations.
+access_control:
+  OPEN_must_not_see: [SR-010, SR-011, SR-012, SR-013, SR-018, SR-022, SR-023]
+  RESTRICTED_must_not_see: [SR-013, SR-022]

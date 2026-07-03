@@ -1,0 +1,8 @@
+design_id,title,satisfies,type,classification
+DE-01,Airframe & propulsion assembly,SR-001;SR-003;SR-005;SR-006;SR-014,Hardware,OPEN
+DE-02,Ground control station,SR-002;SR-004;SR-024,Software,OPEN
+DE-03,EO/IR payload module,SR-008;SR-009;SR-010,Hardware,OPEN
+DE-04,Datalink subsystem,SR-011;SR-012;SR-013;SR-018,Hardware,RESTRICTED
+DE-05,Navigation & flight control,SR-015;SR-016;SR-017;SR-020,Software,OPEN
+DE-06,Safety monitor,SR-019;SR-020,Software,OPEN
+DE-07,Crypto & tamper subsystem,SR-022;SR-023,Hardware,SECRET

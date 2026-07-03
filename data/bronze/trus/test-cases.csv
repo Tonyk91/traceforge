@@ -1,0 +1,22 @@
+test_id,title,covers,method,status,classification
+TC-001,Endurance flight-time measurement,SR-001,Test,pass,OPEN
+TC-002,Two-person crew operation walkthrough,SR-002,Demonstration,pass,OPEN
+TC-003,Max takeoff weight measurement,SR-003,Test,pass,OPEN
+TC-004,Mission-planning UI review,SR-004,Inspection,pass,OPEN
+TC-005,Cruise airspeed envelope,SR-005,Test,pass,OPEN
+TC-006,Service ceiling analysis,SR-006,Analysis,pass,OPEN
+TC-007,EO/IR ground sample distance,SR-008,Test,pass,OPEN
+TC-008,Capture-transmit-store demonstration,SR-009,Demonstration,pass,OPEN
+TC-009,Onboard storage capacity,SR-010,Test,pass,RESTRICTED
+TC-010,Datalink line-of-sight range,SR-011;SR-018,Test,pass,RESTRICTED
+TC-011,C2 traffic encryption analysis,SR-012,Analysis,pass,RESTRICTED
+TC-012,Frequency-hopping link integrity,SR-013,Test,pass,SECRET
+TC-013,Single-charge flight time,SR-014,Test,pass,OPEN
+TC-014,GNSS position accuracy,SR-015,Test,pass,OPEN
+TC-015,Inertial nav during GNSS denial,SR-016,Analysis,pass,OPEN
+TC-016,Return-to-home on link loss,SR-017,Test,pass,OPEN
+TC-017,Catastrophic failure rate analysis,SR-019,Analysis,pass,OPEN
+TC-018,Geofence breach auto-RTH,SR-020,Demonstration,pass,OPEN
+TC-019,Tamper-triggered key zeroize,SR-022,Test,pass,SECRET
+TC-020,Legacy payload interface regression,SR-777,Test,pass,OPEN
+TC-021,Ground station boot readiness,SR-024,Test,pass,OPEN

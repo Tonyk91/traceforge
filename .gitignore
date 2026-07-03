@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Env / secrets
+.env
+.env.local
+*.key
+
+# Data lake artifacts (generated; bronze source is committed)
+data/silver/
+data/gold/
+*.duckdb
+*.parquet
+
+# Node / UI
+node_modules/
+ui/.next/
+ui/out/
+dist/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Reports
+reports/*.html
+reports/*.json
