@@ -1,0 +1,29 @@
+# Keep the build context (and image) lean and reproducible.
+.git
+.github
+.venv
+venv
+**/__pycache__
+*.py[cod]
+*.egg-info
+.pytest_cache
+.ruff_cache
+.mypy_cache
+
+# Tests + eval are not needed in the runtime image.
+tests
+eval
+
+# Generated lake artifacts (regenerated at runtime); bronze source is kept.
+data/silver
+data/gold
+*.duckdb
+*.parquet
+
+# Secrets / local
+.env
+.env.local
+*.key
+.DS_Store
+.idea
+.vscode

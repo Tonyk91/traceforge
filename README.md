@@ -121,8 +121,21 @@ regression. Every metric currently passes its gate:
 | Grounding & faithfulness | accuracy | = 1.00 | 1.000 |
 | Access-control leaks | count | 0 | 0 |
 
+## Deploy
+
+One image serves the dashboard, API, and engine. Runs offline by default; set the Azure OpenAI
+vars to switch RAG synthesis to `gpt-4o` without rebuilding.
+
+```bash
+docker build -t traceforge . && docker run -p 8000:8000 traceforge   # local
+./deploy/azure.sh                                                     # Azure Container Apps
+```
+
+See [`docs/deploy.md`](docs/deploy.md) for the Azure walkthrough and how to wire Azure OpenAI /
+AI Search / Blob.
+
 ## Status
 
 Built in the open, phase by phase. Medallion pipeline, quality + traceability engines, grounded
-clearance-aware RAG, FastAPI serving, MCP server, the CI-gated eval harness, and the compliance
-dashboard are in place; Azure deployment is next.
+clearance-aware RAG, FastAPI serving, MCP server, the CI-gated eval harness, the compliance
+dashboard, and the containerized Azure Container Apps deploy are all in place.
