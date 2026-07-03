@@ -1,5 +1,7 @@
 # TraceForge
 
+[![CI](https://github.com/Tonyk91/traceforge/actions/workflows/ci.yml/badge.svg)](https://github.com/Tonyk91/traceforge/actions/workflows/ci.yml)
+
 **A requirements traceability & compliance copilot for safety- and security-critical systems.**
 
 Certification standards for defense, aerospace and rail systems — DO-178C, MIL-STD-498,
@@ -97,6 +99,22 @@ python -m traceforge.mcp_client_demo    # smoke test: lists tools, proves cleara
 - **Evaluated, not asserted.** A golden set with seeded defects measures extraction precision,
   orphan/conflict F1, RAG faithfulness, and access-control leakage — gated in CI.
 
+## Evaluation
+
+`python -m eval.runner` scores the system against `eval/gold.yaml` and fails the build on any
+regression. Every metric currently passes its gate:
+
+| Capability | Metric | Gate | Result |
+|------------|--------|------|--------|
+| Extraction | F1 | = 1.00 | 1.000 (24/24) |
+| Classification | accuracy | = 1.00 | 1.000 |
+| Quality flags (EARS/INCOSE) | micro-F1 | ≥ 0.90 | 1.000 |
+| Orphans / conflicts / duplicates | exact match | = 1.00 | 1.000 |
+| Grounding & faithfulness | accuracy | = 1.00 | 1.000 |
+| Access-control leaks | count | 0 | 0 |
+
 ## Status
 
-Built in the open, phase by phase. See the task list / commit history for progress.
+Built in the open, phase by phase. Medallion pipeline, quality + traceability engines, grounded
+clearance-aware RAG, FastAPI serving, MCP server, and the CI-gated eval harness are in place; a
+compliance dashboard and Azure deployment are next.
