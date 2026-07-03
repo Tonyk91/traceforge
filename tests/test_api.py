@@ -32,3 +32,22 @@ def test_trace_endpoint():
     r = client.get("/requirements/SR-011/trace").json()
     assert "TC-010" in r["verified_by"]
     assert "DE-04" in r["satisfied_by"]
+
+
+def test_matrix_withholds_above_clearance():
+    open_m = client.get("/matrix?clearance=OPEN").json()
+    open_ids = {row["requirement_id"] for row in open_m["rows"]}
+    assert open_m["visible_requirements"] < open_m["total_requirements"]
+    assert open_m["withheld"] > 0
+    # SR-013 is SECRET — an OPEN caller must not see it anywhere in the matrix.
+    assert "SR-013" not in open_ids
+    assert all(row["classification"] == "OPEN" for row in open_m["rows"])
+
+    secret_m = client.get("/matrix?clearance=SECRET").json()
+    assert secret_m["withheld"] == 0
+    assert "SR-013" in {row["requirement_id"] for row in secret_m["rows"]}
+
+
+def test_dashboard_served():
+    r = client.get("/ui/")
+    assert r.status_code == 200 and "TraceForge" in r.text

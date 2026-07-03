@@ -8,8 +8,11 @@ in retrieval. Run: `uvicorn traceforge.api:app --reload`.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from . import ingest, quality, trace
@@ -18,6 +21,7 @@ from .pipeline import compliance
 from .rag import Rag
 
 BRONZE = os.getenv("TRACEFORGE_BRONZE", "data/bronze/trus")
+STATIC = Path(__file__).parent / "static"
 
 app = FastAPI(title="TraceForge", version="0.1.0",
               description="Requirements traceability & compliance copilot")
@@ -98,3 +102,49 @@ def trace_requirement(requirement_id: str) -> dict:
         "verified_by": [t.test_id for t in tests if requirement_id in t.covers],
         "satisfied_by": [d.design_id for d in design if requirement_id in d.satisfies],
     }
+
+
+@app.get("/matrix")
+def matrix(clearance: str = "OPEN") -> dict:
+    """Traceability matrix filtered to the caller's clearance.
+
+    Need-to-know applies to the compliance view too: requirements (and the tests/design that
+    trace to them) above the caller's clearance are withheld, not merely hidden client-side.
+    """
+    try:
+        clr = Classification.parse(clearance)
+    except KeyError:
+        raise HTTPException(400, f"invalid clearance: {clearance}")
+    st = _get()
+    reqs, tests, design = st["reqs"], st["tests"], st["design"]
+    verified = trace.verified_requirements(reqs, tests)
+    rows = []
+    for r in (rq for rq in reqs if rq.classification <= clr):
+        rows.append({
+            "requirement_id": r.requirement_id,
+            "section": r.section,
+            "classification": r.classification.name,
+            "verification_method": r.verification_method,
+            "quality_flags": r.quality_flags,
+            "verified_by": [t.test_id for t in tests
+                            if r.requirement_id in t.covers and t.classification <= clr],
+            "satisfied_by": [d.design_id for d in design
+                             if r.requirement_id in d.satisfies and d.classification <= clr],
+            "verified": r.requirement_id in verified,
+        })
+    return {
+        "clearance": clr.name,
+        "total_requirements": len(reqs),
+        "visible_requirements": len(rows),
+        "withheld": len(reqs) - len(rows),
+        "rows": rows,
+    }
+
+
+@app.get("/")
+def root() -> RedirectResponse:
+    return RedirectResponse("/ui/")
+
+
+if STATIC.is_dir():
+    app.mount("/ui", StaticFiles(directory=str(STATIC), html=True), name="ui")

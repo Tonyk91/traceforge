@@ -84,7 +84,15 @@ traceforge ask "Which requirements have no verifying test?" --clearance RESTRICT
 # Serve the engine as MCP tools for agents (Claude Desktop, IDE copilots) — see docs/mcp.md
 python -m traceforge.mcp_server         # stdio server
 python -m traceforge.mcp_client_demo    # smoke test: lists tools, proves clearance enforcement
+
+# Compliance dashboard + grounded chat (served by the API itself)
+uvicorn traceforge.api:app --reload     # dashboard at http://localhost:8000/  · Swagger at /docs
 ```
+
+The dashboard shows coverage/quality KPIs, the traceability matrix, and grounded Q&A. Switching
+the **clearance** selector re-queries the server: requirements above your clearance are withheld
+from the matrix and the chat refuses to answer from content you cannot see — need-to-know is
+enforced server-side, not hidden in the browser.
 
 ---
 
@@ -116,5 +124,5 @@ regression. Every metric currently passes its gate:
 ## Status
 
 Built in the open, phase by phase. Medallion pipeline, quality + traceability engines, grounded
-clearance-aware RAG, FastAPI serving, MCP server, and the CI-gated eval harness are in place; a
-compliance dashboard and Azure deployment are next.
+clearance-aware RAG, FastAPI serving, MCP server, the CI-gated eval harness, and the compliance
+dashboard are in place; Azure deployment is next.
