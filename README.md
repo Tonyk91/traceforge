@@ -31,6 +31,24 @@ picture:
 
 ---
 
+## Dashboard
+
+The same clearance travels through the whole product. Below, the identical question is asked at
+**SECRET** (answered, with citations) after being **refused at OPEN** — and the traceability
+matrix shows all 24 requirements, including the RESTRICTED/SECRET rows withheld from lower
+clearances. Access control is enforced server-side, not hidden in the browser.
+
+![TraceForge dashboard at SECRET clearance — grounded answer with citations](docs/images/dashboard-secret.png)
+
+<details>
+<summary>Same dashboard at OPEN clearance — 7 requirements withheld, the classified probe refused</summary>
+
+![TraceForge dashboard at OPEN clearance — 7 requirements withheld](docs/images/dashboard-open.png)
+
+</details>
+
+---
+
 ## Architecture
 
 TraceForge is built as a **medallion lakehouse** so ingestion, structuring and serving are

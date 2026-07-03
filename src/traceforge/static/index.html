@@ -6,7 +6,7 @@
 <title>TraceForge — Compliance Dashboard</title>
 <style>
   :root {
-    --bg: #0c0f14; --panel: #141922; --panel2: #1b2230; --line: #263041;
+    --bg: #0b0e13; --panel: #141922; --panel2: #1b2230; --line: #263041; --line2: #31405a;
     --ink: #e6edf6; --muted: #8595ab; --accent: #4da3ff; --accent2: #7ee3c4;
     --warn: #f2b750; --bad: #ff6b6b; --ok: #46c98b;
     --open: #46c98b; --restricted: #f2b750; --secret: #ff6b6b;
@@ -16,73 +16,99 @@
     margin: 0; background: var(--bg); color: var(--ink);
     font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
+  .topbar { height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
   code, .mono { font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; }
   header {
-    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-    padding: 18px 24px; border-bottom: 1px solid var(--line); background: var(--panel);
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    padding: 16px 24px; border-bottom: 1px solid var(--line); background: var(--panel);
   }
   .brand { font-size: 20px; font-weight: 700; letter-spacing: .3px; }
   .brand span { color: var(--accent); }
   .tag { color: var(--muted); font-size: 13px; }
   .spacer { flex: 1; }
-  .clearance { display: flex; align-items: center; gap: 10px; }
+  .legend { display: flex; gap: 10px; align-items: center; font-size: 11px; color: var(--muted); }
+  .legend .badge { font-size: 10px; }
+  .clearance { display: flex; align-items: center; gap: 9px; }
   .clearance label { color: var(--muted); font-size: 13px; }
   select {
-    background: var(--panel2); color: var(--ink); border: 1px solid var(--line);
-    border-radius: 8px; padding: 8px 12px; font-size: 14px;
+    background: var(--panel2); color: var(--ink); border: 1px solid var(--line2);
+    border-radius: 8px; padding: 8px 12px; font-size: 14px; font-weight: 600; cursor: pointer;
   }
-  main { max-width: 1180px; margin: 0 auto; padding: 24px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+  main { max-width: 1200px; margin: 0 auto; padding: 22px 24px 40px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 13px; }
   .kpi {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 15px 16px;
   }
-  .kpi .v { font-size: 30px; font-weight: 700; }
-  .kpi .l { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .6px; margin-top: 4px; }
+  .kpi .v { font-size: 30px; font-weight: 700; line-height: 1.1; }
+  .kpi .l { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .6px; margin-top: 4px; }
   .kpi.good .v { color: var(--ok); } .kpi.warn .v { color: var(--warn); } .kpi.bad .v { color: var(--bad); }
-  .cols { display: grid; grid-template-columns: 1.55fr 1fr; gap: 20px; margin-top: 22px; }
-  @media (max-width: 900px) { .cols { grid-template-columns: 1fr; } }
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-  .card h2 { margin: 0; padding: 14px 18px; font-size: 15px; border-bottom: 1px solid var(--line); }
+  .bar { height: 5px; border-radius: 99px; background: var(--panel2); margin-top: 10px; overflow: hidden; }
+  .bar > i { display: block; height: 100%; border-radius: 99px; }
+  .cols { display: grid; grid-template-columns: 1.6fr 1fr; gap: 18px; margin-top: 20px; }
+  @media (max-width: 940px) { .cols { grid-template-columns: 1fr; } }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+  .card h2 { margin: 0; padding: 13px 18px; font-size: 15px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 8px; }
   .card h2 small { color: var(--muted); font-weight: 400; font-size: 12px; }
   .card .body { padding: 14px 18px; }
+  .toolbar { display: flex; gap: 10px; align-items: center; padding: 10px 18px; border-bottom: 1px solid var(--line); }
+  .search { flex: 1; background: var(--panel2); color: var(--ink); border: 1px solid var(--line2); border-radius: 8px; padding: 7px 11px; font-size: 13px; }
   .notice { padding: 10px 18px; background: var(--panel2); color: var(--muted); font-size: 13px; border-bottom: 1px solid var(--line); }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; position: sticky; top: 0; background: var(--panel); }
-  .tbl-wrap { max-height: 560px; overflow: auto; }
+  th { color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; position: sticky; top: 0; background: var(--panel); z-index: 1; }
+  tbody tr:hover { background: rgba(77,163,255,.05); }
+  .tbl-wrap { max-height: 580px; overflow: auto; }
   .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: .4px; }
   .badge.OPEN { background: rgba(70,201,139,.16); color: var(--open); }
   .badge.RESTRICTED { background: rgba(242,183,80,.16); color: var(--restricted); }
   .badge.SECRET { background: rgba(255,107,107,.16); color: var(--secret); }
   .pill { display: inline-block; padding: 1px 7px; border-radius: 6px; font-size: 11px; margin: 1px 2px 1px 0; background: var(--panel2); color: var(--muted); }
   .pill.flag { background: rgba(242,183,80,.14); color: var(--warn); }
+  .pill.clean { color: var(--ok); background: rgba(70,201,139,.10); }
+  .mark { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 6px; margin-left: 5px; cursor: help; }
+  .mark.cf { background: rgba(255,107,107,.16); color: var(--bad); }
+  .mark.dp { background: rgba(242,183,80,.16); color: var(--warn); }
   .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
   .dot.ok { background: var(--ok); } .dot.no { background: var(--bad); }
-  .chat-log { display: flex; flex-direction: column; gap: 12px; min-height: 120px; max-height: 420px; overflow: auto; margin-bottom: 12px; }
-  .msg { padding: 10px 12px; border-radius: 10px; font-size: 14px; }
-  .msg.user { background: var(--panel2); align-self: flex-end; max-width: 85%; }
-  .msg.bot { background: #10233a; border: 1px solid #1d3a5c; }
+  tr.withheld td { color: var(--restricted); background: rgba(242,183,80,.06); font-size: 12.5px; text-align: center; }
+  .chat-log { display: flex; flex-direction: column; gap: 11px; min-height: 150px; max-height: 430px; overflow: auto; margin-bottom: 12px; }
+  .msg { padding: 10px 12px; border-radius: 10px; font-size: 14px; max-width: 90%; }
+  .msg.user { background: var(--panel2); align-self: flex-end; }
+  .msg.bot { background: #0f2237; border: 1px solid #1d3a5c; align-self: flex-start; }
   .msg.bot.refused { background: rgba(255,107,107,.08); border-color: rgba(255,107,107,.35); }
+  .msg.sys { background: transparent; border: 1px dashed var(--line2); color: var(--muted); font-size: 13px; align-self: stretch; max-width: 100%; }
   .cites { margin-top: 8px; font-size: 12px; color: var(--muted); }
-  .cites a { color: var(--accent2); text-decoration: none; cursor: default; }
+  .cites .mono { color: var(--accent2); }
   .ask-row { display: flex; gap: 8px; }
-  input[type=text] { flex: 1; background: var(--panel2); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+  input[type=text] { flex: 1; background: var(--panel2); color: var(--ink); border: 1px solid var(--line2); border-radius: 8px; padding: 10px 12px; font-size: 14px; }
   button { background: var(--accent); color: #06121f; border: 0; border-radius: 8px; padding: 10px 16px; font-weight: 700; cursor: pointer; }
-  button:disabled { opacity: .5; cursor: default; }
-  .hint { color: var(--muted); font-size: 12px; margin-top: 8px; }
+  button:hover { filter: brightness(1.08); } button:disabled { opacity: .5; cursor: default; }
+  .hint { color: var(--muted); font-size: 12px; margin-top: 10px; }
   .hint b { color: var(--ink); font-weight: 600; }
+  .chip { cursor: pointer; color: var(--accent); }
+  .findings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+  .findings-grid .l { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
   .conflict { color: var(--bad); } .dup { color: var(--warn); }
+  footer { max-width: 1200px; margin: 0 auto; padding: 0 24px 40px; color: var(--muted); font-size: 12px; }
+  footer a { color: var(--accent); text-decoration: none; }
 </style>
 </head>
 <body>
+<div class="topbar"></div>
 <header>
   <div>
     <div class="brand">Trace<span>Forge</span></div>
     <div class="tag">Requirements traceability &amp; compliance copilot · <span class="mono">TRUS</span> dataset</div>
   </div>
   <div class="spacer"></div>
+  <div class="legend">
+    <span>Classification:</span>
+    <span class="badge OPEN">OPEN</span>
+    <span class="badge RESTRICTED">RESTRICTED</span>
+    <span class="badge SECRET">SECRET</span>
+  </div>
   <div class="clearance">
-    <label for="clr">Your clearance</label>
+    <label for="clr">🔓 Your clearance</label>
     <select id="clr">
       <option value="OPEN">OPEN</option>
       <option value="RESTRICTED">RESTRICTED</option>
@@ -97,6 +123,9 @@
   <div class="cols">
     <div class="card">
       <h2>Traceability matrix <small>— requirement → verification → design</small></h2>
+      <div class="toolbar">
+        <input class="search" id="search" type="text" placeholder="Filter by requirement id, flag, test…" autocomplete="off" />
+      </div>
       <div class="notice" id="matrix-notice">Loading…</div>
       <div class="tbl-wrap">
         <table>
@@ -109,8 +138,8 @@
     </div>
 
     <div class="card">
-      <h2>Grounded Q&amp;A <small>— answers cite requirements; refuses without evidence</small></h2>
-      <div class="body">
+      <h2>Grounded Q&amp;A <small>— cites requirements; refuses without evidence</small></h2>
+      <div class="body" style="display:flex;flex-direction:column;flex:1">
         <div class="chat-log" id="chat"></div>
         <div class="ask-row">
           <input type="text" id="q" placeholder="Ask about the requirements…" autocomplete="off" />
@@ -118,76 +147,102 @@
         </div>
         <div class="hint">
           Enforced at <b id="chat-clr">OPEN</b> clearance. Try the classified probe
-          <a href="#" id="probe" style="cursor:pointer;color:var(--accent)">datalink range in a jammed environment</a>
+          <span class="chip" id="probe">datalink range in a jammed environment</span>
           at OPEN vs SECRET.
         </div>
       </div>
     </div>
   </div>
 
-  <div class="card" style="margin-top:20px">
+  <div class="card" style="margin-top:18px">
     <h2>Compliance findings</h2>
-    <div class="body" id="findings" style="color:var(--muted)">Loading…</div>
+    <div class="body findings-grid" id="findings" style="color:var(--muted)">Loading…</div>
   </div>
 </main>
+
+<footer>
+  Synthetic dataset (fictional UAV reconnaissance system) · engine runs offline by default,
+  Azure OpenAI / AI Search when configured · access control enforced server-side, not in the browser.
+</footer>
 
 <script>
 const $ = s => document.querySelector(s);
 const clrSel = $("#clr");
-let report = null;
+let report = null, matrixData = null, conflictIds = new Set(), dupIds = new Set();
 
 async function jget(url) { const r = await fetch(url); if (!r.ok) throw new Error(url); return r.json(); }
+const esc = s => String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 
-function kpi(v, l, cls="") { return `<div class="kpi ${cls}"><div class="v">${v}</div><div class="l">${l}</div></div>`; }
+function kpiBar(pct, cls) {
+  const col = cls === "good" ? "var(--ok)" : cls === "warn" ? "var(--warn)" : "var(--bad)";
+  return `<div class="bar"><i style="width:${pct}%;background:${col}"></i></div>`;
+}
+function kpi(v, l, cls = "", bar = "") {
+  return `<div class="kpi ${cls}"><div class="v">${v}</div><div class="l">${l}</div>${bar}</div>`;
+}
 
 function renderKpis(r) {
   const cov = Math.round(r.coverage * 100), q = Math.round(r.quality_score * 100);
+  const covCls = cov >= 90 ? "good" : cov >= 75 ? "warn" : "bad";
+  const qCls = q >= 90 ? "good" : "warn";
   $("#kpis").innerHTML =
     kpi(r.total_requirements, "Requirements") +
-    kpi(cov + "%", "Verified coverage", cov >= 90 ? "good" : cov >= 75 ? "warn" : "bad") +
-    kpi(q + "%", "Quality score", q >= 90 ? "good" : "warn") +
+    kpi(cov + "%", "Verified coverage", covCls, kpiBar(cov, covCls)) +
+    kpi(q + "%", "Quality score", qCls, kpiBar(q, qCls)) +
     kpi(r.orphan_requirements.length, "Orphan reqs", r.orphan_requirements.length ? "warn" : "good") +
     kpi(r.conflicts.length, "Conflicts", r.conflicts.length ? "bad" : "good") +
     kpi(r.duplicates.length, "Duplicates", r.duplicates.length ? "warn" : "good");
 }
 
 function renderFindings(r) {
-  const orph = r.orphan_requirements.map(x => `<span class="pill">${x}</span>`).join(" ") || "—";
-  const conf = r.conflicts.map(([a,b]) => `<span class="conflict mono">${a} ↔ ${b}</span>`).join("&nbsp;&nbsp; ") || "—";
-  const dup = r.duplicates.map(([a,b]) => `<span class="dup mono">${a} ≈ ${b}</span>`).join("&nbsp;&nbsp; ") || "—";
-  const ot = r.orphan_tests.map(x => `<span class="pill">${x}</span>`).join(" ") || "—";
-  $("#findings").innerHTML = `
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px">
-      <div><div class="l" style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px">Orphan requirements (no test)</div><div style="margin-top:6px">${orph}</div></div>
-      <div><div class="l" style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px">Orphan tests (dangling)</div><div style="margin-top:6px">${ot}</div></div>
-      <div><div class="l" style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px">Requirement conflicts</div><div style="margin-top:6px">${conf}</div></div>
-      <div><div class="l" style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px">Duplicate requirements</div><div style="margin-top:6px">${dup}</div></div>
-    </div>`;
+  const grp = (label, html) => `<div><div class="l">${label}</div><div style="margin-top:6px">${html || "—"}</div></div>`;
+  $("#findings").innerHTML =
+    grp("Orphan requirements (no test)", r.orphan_requirements.map(x => `<span class="pill">${x}</span>`).join(" ")) +
+    grp("Orphan tests (dangling)", r.orphan_tests.map(x => `<span class="pill">${x}</span>`).join(" ")) +
+    grp("Requirement conflicts", r.conflicts.map(([a, b]) => `<span class="conflict mono">${a} ↔ ${b}</span>`).join("&nbsp;&nbsp; ")) +
+    grp("Duplicate requirements", r.duplicates.map(([a, b]) => `<span class="dup mono">${a} ≈ ${b}</span>`).join("&nbsp;&nbsp; "));
+}
+
+function rowHtml(row) {
+  const flags = row.quality_flags.length
+    ? row.quality_flags.map(f => `<span class="pill flag">${f}</span>`).join(" ")
+    : `<span class="pill clean">clean</span>`;
+  const vby = row.verified_by.length ? row.verified_by.map(t => `<span class="pill mono">${t}</span>`).join(" ") : "—";
+  const dby = row.satisfied_by.length ? row.satisfied_by.map(d => `<span class="pill mono">${d}</span>`).join(" ") : "—";
+  const status = row.verified ? `<span class="dot ok"></span>verified` : `<span class="dot no"></span>orphan`;
+  let marks = "";
+  if (conflictIds.has(row.requirement_id)) marks += `<span class="mark cf" title="In a requirement conflict">⚠ conflict</span>`;
+  if (dupIds.has(row.requirement_id)) marks += `<span class="mark dp" title="Near-duplicate of another requirement">⧉ dup</span>`;
+  return `<tr>
+    <td class="mono">${row.requirement_id}${marks}</td>
+    <td><span class="badge ${row.classification}">${row.classification}</span></td>
+    <td>${flags}</td>
+    <td>${vby}</td>
+    <td>${dby}</td>
+    <td style="white-space:nowrap">${status}</td>
+  </tr>`;
+}
+
+function paintMatrix() {
+  if (!matrixData) return;
+  const q = $("#search").value.trim().toLowerCase();
+  const rows = matrixData.rows.filter(r => !q ||
+    (r.requirement_id + " " + r.quality_flags.join(" ") + " " +
+     r.verified_by.join(" ") + " " + r.satisfied_by.join(" ")).toLowerCase().includes(q));
+  let html = rows.map(rowHtml).join("");
+  if (!q && matrixData.withheld > 0) {
+    html += `<tr class="withheld"><td colspan="6">🔒 ${matrixData.withheld} requirement${matrixData.withheld > 1 ? "s" : ""} withheld above ${matrixData.clearance} clearance — enforced server-side</td></tr>`;
+  }
+  $("#matrix-body").innerHTML = html || `<tr><td colspan="6" style="color:var(--muted)">No requirements match “${esc(q)}”.</td></tr>`;
 }
 
 async function renderMatrix(clr) {
-  const m = await jget("/matrix?clearance=" + clr);
+  matrixData = await jget("/matrix?clearance=" + clr);
+  const m = matrixData;
   $("#matrix-notice").innerHTML = m.withheld > 0
-    ? `Showing <b style="color:var(--ink)">${m.visible_requirements}</b> of ${m.total_requirements} requirements visible at <span class="badge ${clr}">${clr}</span> clearance — <b style="color:var(--restricted)">${m.withheld} withheld</b> (need-to-know enforced server-side).`
+    ? `Showing <b style="color:var(--ink)">${m.visible_requirements}</b> of ${m.total_requirements} requirements visible at <span class="badge ${clr}">${clr}</span> — <b style="color:var(--restricted)">${m.withheld} withheld</b> (need-to-know).`
     : `Showing all <b style="color:var(--ink)">${m.total_requirements}</b> requirements at <span class="badge ${clr}">${clr}</span> clearance.`;
-  $("#matrix-body").innerHTML = m.rows.map(row => {
-    const flags = row.quality_flags.length
-      ? row.quality_flags.map(f => `<span class="pill flag">${f}</span>`).join(" ")
-      : `<span class="pill">clean</span>`;
-    const vby = row.verified_by.length ? row.verified_by.map(t => `<span class="pill mono">${t}</span>`).join(" ") : "—";
-    const dby = row.satisfied_by.length ? row.satisfied_by.map(d => `<span class="pill mono">${d}</span>`).join(" ") : "—";
-    const status = row.verified
-      ? `<span class="dot ok"></span>verified`
-      : `<span class="dot no"></span>orphan`;
-    return `<tr>
-      <td class="mono">${row.requirement_id}</td>
-      <td><span class="badge ${row.classification}">${row.classification}</span></td>
-      <td>${flags}</td>
-      <td>${vby}</td>
-      <td>${dby}</td>
-      <td style="white-space:nowrap">${status}</td>
-    </tr>`;
-  }).join("");
+  paintMatrix();
 }
 
 function bubble(cls, html) {
@@ -198,18 +253,18 @@ function bubble(cls, html) {
 
 async function ask(q) {
   const clr = clrSel.value;
-  bubble("user", q.replace(/</g, "&lt;"));
+  bubble("user", esc(q));
   $("#send").disabled = true;
   try {
     const r = await fetch("/ask", {
-      method: "POST", headers: {"Content-Type": "application/json"},
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ question: q, clearance: clr })
     }).then(x => x.json());
     const cites = (r.citations && r.citations.length)
-      ? `<div class="cites">Sources: ${r.citations.map(c => `<a>${c}</a>`).join(", ")}</div>` : "";
-    bubble("bot" + (r.refused ? " refused" : ""), r.answer.replace(/</g, "&lt;") + cites);
+      ? `<div class="cites">Sources: ${r.citations.map(c => `<span class="mono">${esc(c)}</span>`).join(", ")}</div>` : "";
+    bubble("bot" + (r.refused ? " refused" : ""), esc(r.answer) + cites);
   } catch (e) {
-    bubble("bot refused", "Request failed.");
+    bubble("bot refused", "Request failed — is the server running?");
   }
   $("#send").disabled = false;
 }
@@ -221,18 +276,23 @@ async function refresh() {
 }
 
 async function init() {
+  bubble("sys", "Ask a grounded question about the requirements. Answers cite requirement IDs; if no requirement <em>at your clearance</em> grounds the question, the system refuses rather than guess.");
   report = await jget("/report");
+  report.conflicts.forEach(([a, b]) => { conflictIds.add(a); conflictIds.add(b); });
+  report.duplicates.forEach(([a, b]) => { dupIds.add(a); dupIds.add(b); });
   renderKpis(report); renderFindings(report);
   await refresh();
 }
 
 clrSel.addEventListener("change", refresh);
+$("#search").addEventListener("input", paintMatrix);
 $("#send").addEventListener("click", () => { const q = $("#q").value.trim(); if (q) { ask(q); $("#q").value = ""; } });
 $("#q").addEventListener("keydown", e => { if (e.key === "Enter") $("#send").click(); });
-$("#probe").addEventListener("click", e => { e.preventDefault();
-  $("#q").value = "What is the datalink range requirement in a jammed electromagnetic environment?"; $("#q").focus(); });
+$("#probe").addEventListener("click", () => {
+  $("#q").value = "What is the datalink range requirement in a jammed electromagnetic environment?"; $("#q").focus();
+});
 
-init().catch(e => { $("#matrix-notice").textContent = "Failed to load API. Is the server running?"; });
+init().catch(() => { $("#matrix-notice").textContent = "Failed to load API. Is the server running?"; });
 </script>
 </body>
 </html>
