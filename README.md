@@ -12,6 +12,9 @@ license: mit
 # TraceForge
 
 [![CI](https://github.com/Tonyk91/traceforge/actions/workflows/ci.yml/badge.svg)](https://github.com/Tonyk91/traceforge/actions/workflows/ci.yml)
+[![Live demo](https://img.shields.io/badge/%F0%9F%A4%97%20Live%20demo-Hugging%20Face-yellow)](https://tonyk91-traceforge.hf.space/)
+
+**▶ Live demo:** <https://tonyk91-traceforge.hf.space/> — switch the clearance selector to watch classified requirements withhold from the matrix and the chat refuse content above your need-to-know.
 
 **A requirements traceability & compliance copilot for safety- and security-critical systems.**
 
